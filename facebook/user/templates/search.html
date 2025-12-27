@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Search People{% endblock %}
+
+{% block content %}
+<style>
+/* ===== PAGE ===== */
+body {
+  background: #f0f2f5;
+}
+
+/* ===== NAVBAR ===== */
+.search-navbar {
+  background: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+
+.search-navbar img {
+  width: 40px;
+}
+
+.search-navbar input {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #f0f2f5;
+  outline: none;
+}
+
+/* ===== CONTAINER ===== */
+.search-container {
+  max-width: 800px;
+  margin: 30px auto;
+}
+
+/* ===== USER CARD ===== */
+.user-card {
+  background: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+
+.user-card img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-info strong {
+  font-size: 16px;
+}
+
+.user-actions button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-btn {
+  background: #0866ff;
+  color: white;
+}
+
+.remove-btn {
+  background: #e4e6eb;
+}
+
+.accept-btn {
+  background: #0866ff;
+  color: white;
+}
+
+.reject-btn {
+  background: #e4e6eb;
+  margin-left: 6px;
+}
+</style>
+
+<!-- ===== RESULTS ===== -->
+<div class="search-container">
+  <h2>Search Results</h2>
+
+  {% for u in users %}
+  <div class="user-card">
+
+    <img src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% else %}https://picsum.photos/100{% endif %}">
+
+    <div class="user-info">
+      <strong>{{ u.username }}</strong>
+    </div>
+
+    <div class="user-actions">
+
+      {% if u.id in friends_ids %}
+        <form method="POST" action="{% url 'remove_friend' u.id %}">
+          {% csrf_token %}
+          <button class="remove-btn">Remove Friend</button>
+        </form>
+
+      {% elif u.id in sent_ids %}
+        <form method="POST" action="{% url 'cancel_friend_request' u.id %}">
+          {% csrf_token %}
+          <button class="remove-btn">Cancel Request</button>
+        </form>
+
+      {% elif u.id in received_ids %}
+        <form method="POST" action="{% url 'accept_friend' u.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button class="accept-btn">Accept</button>
+        </form>
+        <form method="POST" action="{% url 'reject_friend_request' u.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button class="reject-btn">Reject</button>
+        </form>
+
+      {% else %}
+        <form method="POST" action="{% url 'send_friend_request' u.id %}">
+          {% csrf_token %}
+          <button class="add-btn">Add Friend</button>
+        </form>
+      {% endif %}
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+

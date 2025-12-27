@@ -7,7 +7,8 @@
    <title>Sign up with Google</title>  
    <style>  
       body {  
-        background-image: url('{% static "background-image.jpg" %}');  
+
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         background-size: cover;  
         background-position: center;  
         display: flex;  
@@ -97,9 +98,18 @@
 </head>  
 <body>  
    <div class="container">  
+
       <h2>Sign up with Google</h2>  
       <div class="divider"></div>  
-      <form method="post">  
+      {% if error_message %}
+          <div style="color: red; margin-bottom: 10px;">{{ error_message }}</div>
+      {% endif %}
+      {% if messages %}
+          {% for message in messages %}
+              <div style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %}; margin-bottom: 10px;">{{ message }}</div>
+          {% endfor %}
+      {% endif %}
+      <form method="post">
         {% csrf_token %}  
         <div class="form-row">  
            <label for="first_name">First Name:</label>  

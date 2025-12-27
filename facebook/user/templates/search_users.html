@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Search People</h2>
+
+<form method="GET">
+  <input name="q" placeholder="Search users..." value="{{ request.GET.q }}">
+</form>
+
+<hr>
+
+{% for u in users %}
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+  <img src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% else %}https://picsum.photos/40{% endif %}" width="40">
+
+  <strong>{{ u.username }}</strong>
+
+  {% if user_status.u.id == 'none' %}
+    <form method="POST" action="{% url 'send_friend_request' u.id %}">
+      {% csrf_token %}
+      <button>➕ Add Friend</button>
+    </form>
+
+  {% elif user_status.u.id == 'request_sent' %}
+    <form method="POST" action="{% url 'cancel_friend_request' u.id %}">
+      {% csrf_token %}
+      <button>❌ Cancel</button>
+    </form>
+
+  {% elif user_status.u.id == 'request_received' %}
+    <form method="POST" action="{% url 'accept_friend_request' u.id %}">
+      {% csrf_token %}
+      <button>✅ Accept</button>
+    </form>
+
+    <form method="POST" action="{% url 'reject_friend_request' u.id %}">
+      {% csrf_token %}
+      <button>❌ Reject</button>
+    </form>
+
+  {% elif user_status.u.id == 'friends' %}
+    <form method="POST" action="{% url 'remove_friend' u.id %}">
+      {% csrf_token %}
+      <button>👥 Friends</button>
+    </form>
+  {% endif %}
+</div>
+{% endfor %}
+
+{% endblock %}

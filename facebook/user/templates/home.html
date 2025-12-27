@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<style>
+/* ================= PAGE LAYOUT ================= */
+.home-layout {
+  display: grid;
+  grid-template-columns: 260px 600px 260px;
+  gap: 12px;
+  justify-content: center;
+  padding: 0 8px;
+  height: calc(100vh - 64px);
+}
+
+/* ================= LEFT ================= */
+.left-sidebar {
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+}
+
+.sidebar-card {
+  background: white;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.sidebar-item {
+  display:flex;
+  gap:12px;
+  padding:8px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+.sidebar-item:hover { background:#f0f2f5; }
+
+/* ================= FEED ================= */
+.feed {
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* ================= CREATE POST ================= */
+.create-post {
+  background:white;
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:12px;
+  box-shadow:0 1px 2px rgba(0,0,0,.08);
+}
+
+.create-post-top {
+  display:flex;
+  gap:10px;
+}
+
+.create-post-top img {
+  width:40px;
+  height:40px;
+  border-radius:50%;
+}
+
+.create-post-top textarea {
+  flex:1;
+  border-radius:20px;
+  padding:10px 15px;
+  border:none;
+  background:#f0f2f5;
+}
+
+.create-post-actions {
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+  border-top:1px solid #ddd;
+  padding-top:8px;
+}
+
+.create-post-actions label {
+  font-weight:600;
+  cursor:pointer;
+  color:#65676b;
+}
+.create-post-actions input { display:none; }
+
+/* ================= POST ================= */
+.post-card {
+  background:white;
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:14px;
+  box-shadow:0 1px 2px rgba(0,0,0,.08);
+}
+
+.post-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.post-user {
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.post-user img {
+  width:40px;
+  height:40px;
+  border-radius:50%;
+}
+
+/* ================= POST MENU ================= */
+.post-menu {
+  position: relative;
+}
+
+.post-menu-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.post-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  width: 150px;
+  display: none;
+  z-index: 10;
+}
+
+.post-menu-dropdown a,
+.post-menu-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  /* 🔥 FIX LINK DEFAULT STYLE */
+  color: #050505;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.post-menu-dropdown a:visited {
+  color: #050505;
+}
+
+.post-menu-dropdown a:hover,
+.post-menu-dropdown button:hover {
+  background: #f0f2f5;
+  color: #050505;
+}
+
+/* ================= POST CONTENT ================= */
+.post-text {
+  margin:8px 0;
+  font-size:15px;
+}
+
+.post-media {
+  margin-top:8px;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.post-media img,
+.post-media video {
+  width:100%;
+  max-height:520px;
+  object-fit:cover;
+}
+
+/* ================= POST ACTIONS ================= */
+.post-actions {
+  display:flex;
+  justify-content:space-around;
+  border-top:1px solid #ddd;
+  padding-top:6px;
+}
+
+.post-actions button {
+  background:none;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  color:#65676b;
+}
+.post-actions button.liked { color:#0866ff; }
+
+/* ================= COMMENTS ================= */
+.comment-box { margin-top:8px; }
+
+.comment-input {
+  width:100%;
+  padding:8px 12px;
+  border-radius:20px;
+  border:none;
+  background:#f0f2f5;
+}
+
+.comment {
+  margin-top:8px;
+  font-size:14px;
+}
+
+.comment-actions button {
+  background:none;
+  border:none;
+  color:#0866ff;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.reply-box {
+  margin-left:20px;
+  margin-top:6px;
+}
+
+/* ================= RIGHT ================= */
+.right-sidebar {
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+}
+
+.contacts {
+  background:white;
+  border-radius:10px;
+  padding:12px;
+}
+
+.contact {
+  display:flex;
+  gap:10px;
+  padding:6px;
+  border-radius:8px;
+}
+.contact:hover { background:#f0f2f5; }
+
+.contact img {
+  width:32px;
+  height:32px;
+  border-radius:50%;
+}
+
+.preview-wrapper {
+  position: relative;
+}
+
+.preview-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  cursor: pointer;
+  display: none;
+  z-index: 5;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:1200px){
+  .home-layout { grid-template-columns: 600px 260px; }
+  .left-sidebar { display:none; }
+}
+
+/* ===== MEDIA PREVIEW (ADD ONLY) ===== */
+.create-post-preview {
+  margin-top: 10px;
+  display: none;
+}
+
+.create-post-preview img,
+.create-post-preview video {
+  width: 100%;
+  max-height: 420px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+@media(max-width:900px){
+  .home-layout { grid-template-columns: 1fr; }
+  .right-sidebar { display:none; }
+}
+</style>
+
+<div class="home-layout">
+
+<!-- LEFT -->
+<aside class="left-sidebar">
+  <div class="sidebar-card">
+    <div class="sidebar-item">👤 {{ user.username }}</div>
+    <div class="sidebar-item">👥 Friends</div>
+    <div class="sidebar-item">🕒 Memories</div>
+    <div class="sidebar-item">🔖 Saved</div>
+    <div class="sidebar-item">👪 Groups</div>
+    <div class="sidebar-item">🛒 Marketplace</div>
+  </div>
+</aside>
+
+<!-- FEED -->
+<main class="feed">
+
+<!-- CREATE POST -->
+<div class="create-post">
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+<div class="create-post-top">
+  <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://picsum.photos/40{% endif %}">
+  <textarea name="content" rows="2"
+            placeholder="What's on your mind, {{ user.username }}?"
+            style="width:100%;border-radius:20px;padding:10px;border:none;background:#f0f2f5;"></textarea>
+</div>
+
+<!-- MEDIA PREVIEW (MOVED OUTSIDE FLEX CONTAINER) -->
+<div class="create-post-preview preview-wrapper" id="postPreview">
+  <button type="button" class="preview-close" onclick="clearHomePreview()">✕</button>
+  <img id="imagePreview" style="display:none;">
+  <video id="videoPreview" controls style="display:none;"></video>
+</div>
+
+<div class="create-post-actions">
+  <label>📷 Photo
+    <input type="file" name="image" accept="image/*" onchange="previewImage(this)">
+  </label>
+  <label>🎥 Video
+    <input type="file" name="video" accept="video/*" onchange="previewVideo(this)">
+  </label>
+  <button type="submit">Post</button>
+</div>
+
+</form>
+</div>
+
+<!-- POSTS -->
+{% for post in posts %}
+<div class="post-card">
+
+<div class="post-header">
+  <div class="post-user">
+    <img src="{% if post.user.profile_picture %}{{ post.user.profile_picture.url }}{% else %}https://picsum.photos/40{% endif %}">
+    <div>
+      <strong>{{ post.user.username }}</strong><br>
+      <small>{{ post.created_at|date:"M d, Y H:i" }}</small>
+    </div>
+  </div>
+
+  {% if post.user.id == request.session.user_id %}
+  <div class="post-menu">
+    <button class="post-menu-btn" onclick="togglePostMenu({{ post.id }})">⋯</button>
+    <div class="post-menu-dropdown" id="post-menu-{{ post.id }}">
+      <a href="{% url 'edit_post' post.id %}">✏️ Edit post</a>
+      <form method="POST" action="{% url 'delete_post' post.id %}">
+        {% csrf_token %}
+        <button>🗑 Delete post</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% if post.content %}<div class="post-text">{{ post.content }}</div>{% endif %}
+{% if post.image %}<div class="post-media"><img src="{{ post.image.url }}"></div>{% endif %}
+{% if post.video %}<div class="post-media"><video controls src="{{ post.video.url }}"></video></div>{% endif %}
+
+<div class="post-actions">
+<form method="POST" action="{% url 'like_post' post.id %}">
+{% csrf_token %}
+<button class="{% if post.is_liked %}liked{% endif %}">👍 Like</button>
+</form>
+<button onclick="toggleComments(this)">💬 Comment</button>
+</div>
+
+<!-- COMMENTS -->
+<div class="comment-box" style="display:none;">
+<form method="POST" action="{% url 'add_comment' post.id %}">
+{% csrf_token %}
+<input class="comment-input" name="content" placeholder="Write a comment..." required>
+</form>
+
+{% for comment in post.comments.all %}
+{% if not comment.parent %}
+<div class="comment">
+<strong>{{ comment.user.username }}</strong> {{ comment.content }}
+
+<div class="comment-actions">
+<form method="POST" action="{% url 'like_comment' comment.id %}">
+{% csrf_token %}
+<button>👍 {{ comment.likes.count }}</button>
+</form>
+<button onclick="toggleReply(this)">Reply</button>
+</div>
+
+<div class="reply-box" style="display:none;">
+<form method="POST" action="{% url 'add_comment' post.id %}">
+{% csrf_token %}
+<input type="hidden" name="parent" value="{{ comment.id }}">
+<input class="comment-input" name="content" placeholder="Write a reply..." required>
+</form>
+</div>
+
+{% for reply in comment.children.all %}
+<div class="comment reply-box">
+<strong>{{ reply.user.username }}</strong> {{ reply.content }}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+</div>
+
+</div>
+{% endfor %}
+
+</main>
+
+<!-- RIGHT -->
+<aside class="right-sidebar">
+<div class="contacts">
+<h4>Contacts</h4>
+{% for friend in contacts %}
+<div class="contact">
+<img src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://picsum.photos/32{% endif %}">
+{{ friend.username }}
+</div>
+{% empty %}
+<p style="color:#65676b;font-size:14px;">No contacts yet</p>
+{% endfor %}
+</div>
+</aside>
+
+</div>
+
+<script>
+function toggleComments(btn){
+  const card = btn.closest('.post-card');
+  const box = card.querySelector('.comment-box');
+  box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function toggleReply(btn){
+  const box = btn.parentElement.nextElementSibling;
+  box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function togglePostMenu(id){
+  const menu = document.getElementById('post-menu-' + id);
+  document.querySelectorAll('.post-menu-dropdown').forEach(m => {
+    if(m !== menu) m.style.display = 'none';
+  });
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.post-menu')){
+    document.querySelectorAll('.post-menu-dropdown')
+      .forEach(m => m.style.display = 'none');
+  }
+});
+
+/* ===== MEDIA PREVIEW LOGIC (ADD ONLY) ===== */
+function previewImage(input){
+  const file = input.files[0];
+  if(!file) return;
+
+  const img = document.getElementById('imagePreview');
+  const video = document.getElementById('videoPreview');
+  const box = document.getElementById('postPreview');
+  const closeBtn = box.querySelector('.preview-close');
+
+  img.src = URL.createObjectURL(file);
+  img.style.display = 'block';
+  video.style.display = 'none';
+  box.style.display = 'block';
+  closeBtn.style.display = 'flex';
+}
+
+function previewVideo(input){
+  const file = input.files[0];
+  if(!file) return;
+
+  const img = document.getElementById('imagePreview');
+  const video = document.getElementById('videoPreview');
+  const box = document.getElementById('postPreview');
+  const closeBtn = box.querySelector('.preview-close');
+
+  video.src = URL.createObjectURL(file);
+  video.style.display = 'block';
+  img.style.display = 'none';
+  box.style.display = 'block';
+  closeBtn.style.display = 'flex';
+}
+
+
+function clearHomePreview(){
+  const box = document.getElementById('postPreview');
+  const img = document.getElementById('imagePreview');
+  const video = document.getElementById('videoPreview');
+
+  box.style.display = 'none';
+  img.src = '';
+  video.src = '';
+  img.style.display = 'none';
+  video.style.display = 'none';
+
+  box.closest('form').querySelector('input[name="image"]').value = '';
+  box.closest('form').querySelector('input[name="video"]').value = '';
+}
+
+</script>
+
+{% endblock %}

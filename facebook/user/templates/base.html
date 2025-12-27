@@ -1,23 +1,227 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-   <meta charset="UTF-8">  
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-   <title>Facebook</title>  
-   <style>  
-      /* your styles */  
-   </style>  
-</head>  
-<body>  
-   <nav>  
-      <ul>  
-        <li><a href="{% url 'homepage' %}">Home</a></li>  
-        <li><a href="{% url 'search_users' %}">Search</a></li>  
-        <li><a href="{% url 'logout' %}">Logout</a></li>  
-      </ul>  
-   </nav>  
-   <div class="container">  
-      {% block content %}{% endblock %}  
-   </div>  
-</body>  
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{% block title %}Facebook Clone{% endblock %}</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f0f2f5;
+  font-family: Arial, sans-serif;
+}
+
+/* ================= NAVBAR ================= */
+.top-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 56px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  z-index: 1000;
+}
+
+/* LEFT */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+}
+
+/* FACEBOOK LOGO */
+.logo {
+  width: 40px;
+  height: 40px;
+  background: #0866ff;
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* SEARCH */
+.search-box {
+  background: #f0f2f5;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: none;
+  width: 220px;
+  font-size: 14px;
+}
+
+/* CENTER */
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.nav-icon {
+  font-size: 22px;
+  color: #65676b;
+  padding: 8px 18px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.nav-icon:hover {
+  background: #f0f2f5;
+}
+
+/* FACEBOOK STYLE ACTIVE (NO UNDERLINE) */
+.nav-icon.active {
+  color: #0866ff;
+  background: #e7f3ff;
+}
+
+/* RIGHT */
+.nav-right {
+  min-width: 200px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+/* ICON BUTTONS */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  background: #f0f2f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.icon-btn:hover {
+  background: #e4e6eb;
+}
+
+/* PROFILE AVATAR (FIXED SIZE) */
+.nav-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1px solid #ddd;
+}
+
+/* DROPDOWN */
+.dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 260px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  display: none;
+  overflow: hidden;
+}
+
+.dropdown.active {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f0f2f5;
+}
+
+/* CONTENT OFFSET */
+.page-content {
+  padding-top: 72px;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .search-box { display:none; }
+  .nav-left { min-width:auto; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<div class="top-nav">
+
+  <!-- LEFT -->
+  <div class="nav-left">
+    <a href="{% url 'home' %}" class="logo">f</a>
+    <input class="search-box" placeholder="Search Facebook">
+  </div>
+
+  <!-- CENTER -->
+  <div class="nav-center">
+    <a href="{% url 'home' %}" class="nav-icon {% if request.path == '/' %}active{% endif %}">🏠</a>
+    <a href="{% url 'profile' %}" class="nav-icon {% if 'profile' in request.path %}active{% endif %}">👤</a>
+    <a href="{% url 'search_users' %}" class="nav-icon">👥</a>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="nav-right">
+
+    <div class="icon-btn">🔔</div>
+
+    <img
+      src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://picsum.photos/36{% endif %}"
+      class="nav-profile-avatar"
+      id="profileBtn">
+
+    <div class="dropdown" id="profileMenu">
+      <div class="dropdown-item" onclick="location.href='{% url 'profile' %}'">👤 Profile</div>
+      <div class="dropdown-item" onclick="location.href='{% url 'logout' %}'">🚪 Logout</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================= PAGE CONTENT ================= -->
+<div class="page-content">
+  {% block content %}{% endblock %}
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+const profileBtn = document.getElementById("profileBtn");
+const profileMenu = document.getElementById("profileMenu");
+
+profileBtn.onclick = (e) => {
+  e.stopPropagation();
+  profileMenu.classList.toggle("active");
+};
+
+document.addEventListener("click", () => {
+  profileMenu.classList.remove("active");
+});
+</script>
+
+</body>
 </html>

@@ -1,77 +1,109 @@
-{% load static %}   
-<!DOCTYPE html>   
-<html lang="en">   
-<head>   
-  <meta charset="UTF-8">   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">   
-  <title>Friends</title>   
-  <style>   
-    /* Add some Facebook-like styles */   
-    body {   
-      font-family: Arial, sans-serif;   
-      background-color: #f0f2f5;   
-    }   
-    .container {   
-      max-width: 800px;   
-      margin: 40px auto;   
-      padding: 20px;   
-      background-color: #fff;   
-      border: 1px solid #ddd;   
-      border-radius: 10px;   
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);   
-    }   
-    .friend-list {   
-      list-style: none;   
-      padding: 0;   
-      margin: 0;   
-    }   
-    .friend-list li {   
-      display: flex;   
-      align-items: center;   
-      padding: 10px;   
-      border-bottom: 1px solid #ddd;   
-    }   
-    .friend-list li:last-child {   
-      border-bottom: none;   
-    }   
-    .friend-picture {  
-        width: 30px;  
-        height: 30px;  
-        border-radius: 50%;  
-        object-fit: cover;  
-        border: 1px solid #ddd;  
-    } 
-    .friend-name {   
-      font-size: 18px;   
-      font-weight: bold;   
-    }   
-  </style>   
-</head>   
-<body>   
-   
-  <nav>   
-    <ul>   
-      <li><a href="{% url 'homepage' %}">Home</a></li>   
-      <li><a href="{% url 'search_users' %}">Search</a></li>   
-      <li><a href="{% url 'friends' %}">Friends</a></li>   
-      <li><a href="{% url 'logout' %}">Logout</a></li>   
-    </ul>   
-  </nav>   
-   
-  <div class="container">   
-    <h2>Friends</h2>   
-    <ul class="friend-list">   
-        {% for friend in friends %}  
-        <li>  
-         {% if friend.profile_picture %}  
-          <img class="friend-picture" src="{{ friend.profile_picture.url }}" alt="Profile Picture">  
-         {% else %}  
-          <img class="friend-picture" src="https://picsum.photos/50/50" alt="Default Profile Picture">  
-         {% endif %}  
-         <span class="friend-name">{{ friend.username }}</span>  
-        </li>  
-      {% endfor %}  
-    </ul>   
-  </div>   
-</body>   
-</html>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Friends{% endblock %}
+
+{% block content %}
+<style>
+/* ================= PAGE WRAPPER ================= */
+.friends-page {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+/* ================= CARD ================= */
+.friends-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 16px;
+}
+
+.friends-card h2 {
+  margin-bottom: 16px;
+  font-size: 22px;
+}
+
+/* ================= FRIEND LIST ================= */
+.friend-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+/* ================= FRIEND ITEM ================= */
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.friend-item:hover {
+  background: #f0f2f5;
+}
+
+/* ================= AVATAR ================= */
+.friend-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+/* ================= INFO ================= */
+.friend-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.friend-sub {
+  font-size: 13px;
+  color: #65676b;
+}
+
+/* ================= EMPTY STATE ================= */
+.empty-text {
+  color: #65676b;
+  font-size: 15px;
+  text-align: center;
+  padding: 20px;
+}
+</style>
+
+<div class="friends-page">
+  <div class="friends-card">
+    <h2>Friends</h2>
+
+    {% if friends %}
+    <div class="friend-list">
+      {% for friend in friends %}
+      <div class="friend-item">
+        {% if friend.profile_picture %}
+          <img class="friend-avatar" src="{{ friend.profile_picture.url }}">
+        {% else %}
+          <img class="friend-avatar" src="{% static 'images/default-avatar.png' %}">
+        {% endif %}
+
+        <div class="friend-info">
+          <span class="friend-name">{{ friend.username }}</span>
+          <span class="friend-sub">Friend</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p class="empty-text">You don’t have any friends yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

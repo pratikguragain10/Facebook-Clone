@@ -10,31 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+
 from pathlib import Path
 from django.conf import settings 
 from django.conf.urls.static import static 
-import ssl
 import os
-import certifi  
-
-EMAIL_USE_TLS = True  
-EMAIL_SSL_CERTFILE = certifi.where()
-
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
   
-
 MEDIA_URL = '/media/'  
-MEDIA_ROOT = os.path.join(BASE_DIR, '')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_PORT = 587              
-EMAIL_USE_TLS = True 
-EMAIL_HOST_USER = 'guragainpratik0@gmail.com'
-EMAIL_HOST_PASSWORD = 'myrollnois27man'
-DEFAULT_FROM_EMAIL = 'guragainpratik0@gmail.com'
+
+# For development, use console email backend to avoid SMTP issues
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Commented out SMTP settings for now to avoid SSL issues during development
+# EMAIL_HOST = 'smtp.gmail.com'  
+# EMAIL_PORT = 587              
+# EMAIL_USE_TLS = True 
+# EMAIL_HOST_USER = 'guragainpratik0@gmail.com'
+# EMAIL_HOST_PASSWORD = 'myrollnois27man'
+# DEFAULT_FROM_EMAIL = 'guragainpratik0@gmail.com'
 
 
 

@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+<style>
+.edit-post-wrapper {
+  max-width: 600px;
+  margin: 80px auto;
+}
+
+.edit-post-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.edit-post-header {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.edit-post-textarea {
+  width: 100%;
+  min-height: 120px;
+  border-radius: 12px;
+  padding: 12px;
+  border: none;
+  background: #f0f2f5;
+  resize: none;
+}
+
+.media-preview {
+  margin-top: 12px;
+  position: relative;
+  display: none;
+}
+
+.media-preview img,
+.media-preview video {
+  width: 100%;
+  max-height: 420px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.preview-remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,.75);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.edit-post-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.edit-post-actions label {
+  font-weight: 600;
+  cursor: pointer;
+  color: #65676b;
+}
+
+.edit-post-actions input {
+  display: none;
+}
+
+.save-btn {
+  background: #0866ff;
+  color: white;
+  border: none;
+  padding: 8px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+</style>
+
+<div class="edit-post-wrapper">
+  <div class="edit-post-card">
+
+    <div class="edit-post-header">✏️ Edit Post</div>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <textarea class="edit-post-textarea"
+        name="content"
+        placeholder="What's on your mind?">{{ post.content }}</textarea>
+
+      <!-- EXISTING MEDIA PREVIEW -->
+      <div class="media-preview" id="mediaPreview">
+
+        <button type="button"
+          class="preview-remove"
+          onclick="removeMedia()">✕</button>
+
+        {% if post.image %}
+          <img src="{{ post.image.url }}" id="imagePreview" style="display:block;">
+          <video id="videoPreview" style="display:none;"></video>
+        {% elif post.video %}
+          <video src="{{ post.video.url }}" controls id="videoPreview" style="display:block;"></video>
+          <img id="imagePreview" style="display:none;">
+        {% else %}
+          <img id="imagePreview" style="display:none;">
+          <video id="videoPreview" controls style="display:none;"></video>
+        {% endif %}
+
+      </div>
+
+      <!-- hidden input to remove existing media -->
+      <input type="hidden" name="remove_media" id="removeMediaInput" value="false">
+
+      <div class="edit-post-actions">
+        <div>
+          <label>📷 Photo
+            <input type="file" name="image" accept="image/*"
+                   onchange="previewImage(this)">
+          </label>
+
+          <label style="margin-left:12px;">🎥 Video
+            <input type="file" name="video" accept="video/*"
+                   onchange="previewVideo(this)">
+          </label>
+        </div>
+
+        <button class="save-btn">Save</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+const previewBox = document.getElementById('mediaPreview');
+const img = document.getElementById('imagePreview');
+const video = document.getElementById('videoPreview');
+const removeInput = document.getElementById('removeMediaInput');
+
+/* SHOW EXISTING MEDIA */
+if (img.src || video.src) {
+  previewBox.style.display = 'block';
+}
+
+/* PREVIEW IMAGE */
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  img.src = URL.createObjectURL(file);
+  img.style.display = 'block';
+
+  video.style.display = 'none';
+  video.src = '';
+
+  previewBox.style.display = 'block';
+  removeInput.value = 'false';
+}
+
+/* PREVIEW VIDEO */
+function previewVideo(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  video.src = URL.createObjectURL(file);
+  video.style.display = 'block';
+
+  img.style.display = 'none';
+  img.src = '';
+
+  previewBox.style.display = 'block';
+  removeInput.value = 'false';
+}
+
+/* REMOVE MEDIA */
+function removeMedia() {
+  img.src = '';
+  video.src = '';
+  img.style.display = 'none';
+  video.style.display = 'none';
+  previewBox.style.display = 'none';
+
+  document.querySelector('input[name="image"]').value = '';
+  document.querySelector('input[name="video"]').value = '';
+
+  removeInput.value = 'true';
+}
+</script>
+
+{% endblock %}
