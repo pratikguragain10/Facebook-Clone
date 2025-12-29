@@ -26,24 +26,20 @@ def home(request):
         image = request.FILES.get('image')
         video = request.FILES.get('video')
 
-        print("FILES:", request.FILES)  # TEMP DEBUG
-
         if content or image or video:
-            Post.objects.create(
-                user=user,
-                content=content,
-                image=image,
-                video=video
-            )
+            post = Post(user=user, content=content)
+            if image:
+                post.image = image
+            if video:
+                post.video = video
+            post.save()
 
         return redirect('home')
 
-    # Friends IDs
     friends_ids = Friend.objects.filter(
         user=user
     ).values_list('friend', flat=True)
 
-    # Feed posts (friends + self)
     posts = (
         Post.objects
         .filter(user__in=list(friends_ids) + [user.id])
@@ -62,6 +58,7 @@ def home(request):
         'contacts': contacts,
     })
 
+
 # ================= PROFILE =================
 def profile(request, user_id=None):
     if 'user_id' not in request.session:
@@ -71,28 +68,27 @@ def profile(request, user_id=None):
         User_Data, id=request.session['user_id']
     )
 
-    # 👤 whose profile?
     profile_user = (
         get_object_or_404(User_Data, id=user_id)
         if user_id else logged_in_user
     )
 
-    # ================= CREATE POST (ONLY OWN PROFILE) =================
+    # ===== CREATE POST (ONLY OWN PROFILE) =====
     if request.method == "POST" and profile_user == logged_in_user:
-        content = request.POST.get('content', '')
+        content = request.POST.get('content', '').strip()
         image = request.FILES.get('image')
         video = request.FILES.get('video')
 
         if content or image or video:
-            Post.objects.create(
-                user=logged_in_user,
-                content=content,
-                image=image,
-                video=video
-            )
+            post = Post(user=logged_in_user, content=content)
+            if image:
+                post.image = image
+            if video:
+                post.video = video
+            post.save()
+
         return redirect('profile')
 
-    # ================= FRIENDSHIP STATE =================
     friendship = Friend.objects.filter(
         user=logged_in_user,
         friend=profile_user
@@ -104,7 +100,6 @@ def profile(request, user_id=None):
     ).first()
 
     friendship_status = None
-
     if friendship and friendship.status == 'accepted':
         friendship_status = 'friends'
     elif reverse_friendship and reverse_friendship.status == 'accepted':
@@ -114,38 +109,29 @@ def profile(request, user_id=None):
     elif reverse_friendship and reverse_friendship.status == 'pending':
         friendship_status = 'request_received'
 
-    # ================= POSTS =================
     posts = (
         Post.objects
         .filter(user=profile_user)
         .select_related('user')
-        .prefetch_related(
-            'likes',
-            'comments__user',
-            'comments__children'
-        )
+        .prefetch_related('likes', 'comments__user', 'comments__children')
         .order_by('-created_at')
     )
 
     for post in posts:
         post.is_liked = post.likes.filter(user=logged_in_user).exists()
 
-    # ================= FRIEND LIST (FIXED – BIDIRECTIONAL) =================
     friend_relations = Friend.objects.filter(
         Q(user=profile_user) | Q(friend=profile_user),
         status='accepted'
     )
 
-    friend_ids = set()
-    for fr in friend_relations:
-        if fr.user_id == profile_user.id:
-            friend_ids.add(fr.friend_id)
-        else:
-            friend_ids.add(fr.user_id)
+    friend_ids = {
+        fr.friend_id if fr.user_id == profile_user.id else fr.user_id
+        for fr in friend_relations
+    }
 
     friends = User_Data.objects.filter(id__in=friend_ids)
 
-    # ================= PHOTOS =================
     photos = (
         Post.objects
         .filter(user=profile_user, image__isnull=False)
