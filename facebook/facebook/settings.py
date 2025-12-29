@@ -10,7 +10,7 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,facebook-clone-sx5w.onrender.com"
+    "localhost,127.0.0.1,connectly-social-t3yx.onrender.com"
 ).split(",")
 
 INSTALLED_APPS = [
@@ -90,6 +90,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://facebook-clone-sx5w.onrender.com",
+    "https://connectly-social-t3yx.onrender.com",
 ]
 
