@@ -90,7 +90,7 @@ def profile(request, user_id=None):
                 image=image,
                 video=video
             )
-        return redirect('profile', user_id=profile_user.id)
+        return redirect('profile')
 
     # ================= FRIENDSHIP STATE =================
     friendship = Friend.objects.filter(
