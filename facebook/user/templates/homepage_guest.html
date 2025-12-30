@@ -6,192 +6,203 @@
   <title>Connectly</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f9fafb, #eef2ff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at top left, #c7d2fe, transparent 40%),
+              radial-gradient(circle at bottom right, #bae6fd, transparent 40%),
+              linear-gradient(135deg, #f8fafc, #eef2ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  overflow: hidden;
+}
 
-    .page {
-      width: 100%;
-      max-width: 1100px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 60px;
-    }
+/* floating light dots */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#ffffffaa 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: 0.2;
+  pointer-events: none;
+}
 
-    /* LEFT SECTION */
-    .brand {
-      flex: 1;
-    }
+.page {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 80px;
+  position: relative;
+  z-index: 1;
+}
 
-    .brand h1 {
-      font-size: 4.5rem;
-      font-weight: 800;
-      margin: 0;
-      background: linear-gradient(90deg, #4f46e5, #3b82f6, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+/* LEFT */
+.brand {
+  flex: 1;
+}
 
-    .brand p {
-      margin-top: 20px;
-      font-size: 1.3rem;
-      color: #4b5563;
-      max-width: 420px;
-    }
+.brand h1 {
+  font-size: 4.8rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(90deg, #6366f1, #3b82f6, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 10px 30px rgba(99,102,241,.35);
+}
 
-    .features {
-      margin-top: 30px;
-      color: #374151;
-      font-size: 1rem;
-    }
+.brand p {
+  margin-top: 22px;
+  font-size: 1.3rem;
+  color: #475569;
+  max-width: 440px;
+}
 
-    .features div {
-      margin-bottom: 10px;
-    }
+.features {
+  margin-top: 30px;
+  font-size: 1.05rem;
+  color: #334155;
+}
 
-    /* LOGIN CARD */
-    .login-container {
-      width: 360px;
-      padding: 30px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    }
+.features div {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
-    .login-container h2 {
-      margin: 0 0 20px;
-      text-align: center;
-      color: #111827;
-    }
+/* LOGIN CARD */
+.login-container {
+  width: 380px;
+  padding: 32px;
+  border-radius: 22px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.9),
+    rgba(255,255,255,.75)
+  );
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,.6);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.15),
+    inset 0 0 0 1px rgba(255,255,255,.5);
+}
 
-    .login-container input {
-      width: 100%;
-      padding: 13px 14px;
-      margin-bottom: 14px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
-      transition: border 0.2s, box-shadow 0.2s;
-    }
+.login-container h2 {
+  margin: 0 0 22px;
+  text-align: center;
+  color: #0f172a;
+  font-size: 1.6rem;
+}
 
-    .login-container input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-    }
+.login-container input {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  background: #f8fafc;
+}
 
-    .login-container button {
-      width: 100%;
-      padding: 13px;
-      border-radius: 10px;
-      border: none;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(90deg, #4f46e5, #3b82f6);
-      color: white;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
+.login-container input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59,130,246,.25);
+}
 
-    .login-container button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
-    }
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(90deg, #6366f1, #3b82f6);
+  color: white;
+  box-shadow: 0 10px 25px rgba(59,130,246,.4);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
 
-    .login-container button:active {
-      transform: scale(0.97);
-    }
+.login-container button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(59,130,246,.45);
+}
 
-    .error-message {
-      color: #dc2626;
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-      text-align: center;
-    }
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 22px 0;
+  color: #94a3b8;
+  font-size: .9rem;
+}
 
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 18px 0;
-      color: #9ca3af;
-      font-size: 0.9rem;
-    }
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
 
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: #d1d5db;
-    }
+.divider span {
+  margin: 0 12px;
+}
 
-    .divider span {
-      margin: 0 10px;
-    }
+/* GOOGLE BUTTON */
+.google-signup-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: white;
+  color: #1f2937;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 12px;
+}
 
-    .signup-button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      text-align: center;
-      background-color: #22c55e;
-      color: white;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      margin-bottom: 10px;
-      transition: background-color 0.2s ease;
-    }
+.google-signup-button img {
+  width: 18px;
+}
 
-    .signup-button:hover {
-      background-color: #16a34a;
-    }
+/* SIGNUP */
+.signup-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  text-align: center;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
 
-    .google-signup-button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      text-align: center;
-      background-color: white;
-      color: #374151;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid #d1d5db;
-      transition: background-color 0.2s ease;
-    }
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .page {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
 
-    .google-signup-button:hover {
-      background-color: #f9fafb;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      .page {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .brand p {
-        margin-left: auto;
-        margin-right: auto;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -228,8 +239,10 @@
       <div class="divider"><span>or</span></div>
 
       <a href="{% url 'google_signup' %}" class="google-signup-button">
-        Continue with Google
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+            Continue with Google
       </a>
+
 
       <a href="{% url 'signup' %}" class="signup-button">
         Create new account
