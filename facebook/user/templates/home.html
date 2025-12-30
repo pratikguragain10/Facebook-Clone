@@ -265,6 +265,39 @@ body {
   background: #e4e6eb;
 }
 
+/* ================= POST MENU CONTAINER FIX ================= */
+.post-menu {
+  position: relative;
+}
+
+/* ================= POST MENU ITEM FIX ================= */
+.post-menu-dropdown a,
+.post-menu-dropdown button {
+  color: #050505;          /* Facebook-like dark text */
+  text-decoration: none;  /* remove underline */
+  font-weight: 500;
+}
+
+.post-menu-dropdown a:hover,
+.post-menu-dropdown button:hover {
+  background: #f0f2f5;
+  color: #050505;
+}
+
+/* ================= POST META SPACING FIX ================= */
+.post-user small {
+  display: block;
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.post-text {
+  margin-top: 8px;      /* key fix */
+  font-size: 15px;
+  line-height: 1.5;
+}
+
 /* ================= POST MENU DROPDOWN ================= */
 .post-menu-dropdown {
   position: absolute;
@@ -291,7 +324,7 @@ body {
   border-radius: 16px;
 }
 
-/* ❌ HIDE CLOSE BUTTON BY DEFAULT */
+/* HIDE CLOSE BUTTON BY DEFAULT */
 .preview-close {
   position: absolute;
   top: 10px;
@@ -304,7 +337,7 @@ body {
   border-radius: 50%;
   font-size: 16px;
   cursor: pointer;
-  display: none;   /* ✅ FIX */
+  display: none;   /* FIX */
   align-items: center;
   justify-content: center;
 }
