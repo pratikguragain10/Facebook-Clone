@@ -28,19 +28,19 @@ body {
   overflow: hidden;
 }
 
-/* 🔽 softer cinematic overlay (FIXED) */
+/* FIX: darker overlay so cover looks rich, not faded */
 .profile-cover::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0,0,0,.05),
-    rgba(0,0,0,.20)
+    rgba(0,0,0,.08),
+    rgba(0,0,0,.25)
   );
-  backdrop-filter: blur(1px);
 }
 
+/* ================= COVER BUTTON ================= */
 .cover-edit-btn {
   position: absolute;
   right: 20px;
@@ -59,11 +59,11 @@ body {
 .profile-header {
   max-width: 1100px;
   margin: auto;
-  position: relative;
   padding: 0 20px;
+  position: relative;
 }
 
-/* 🔽 centered floating card (FIXED) */
+/* FIX: centered glass header like reference */
 .profile-header-glass {
   max-width: 1000px;
   margin: -70px auto 0;
@@ -76,6 +76,7 @@ body {
   position: relative;
 }
 
+/* ================= AVATAR ================= */
 .profile-avatar {
   position: absolute;
   top: -60px;
@@ -97,6 +98,7 @@ body {
   object-fit: cover;
 }
 
+/* ================= PROFILE INFO ================= */
 .profile-info {
   margin-left: 210px;
   display: flex;
@@ -169,7 +171,7 @@ body {
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
-/* 🔽 subtle elevation polish */
+/* POLISH */
 .card:hover {
   transform: translateY(-2px);
   box-shadow:
@@ -177,19 +179,98 @@ body {
     0 6px 16px rgba(0,0,0,.06);
 }
 
-.card h3 {
-  margin: 0 0 12px;
-  font-size: 16px;
-  font-weight: 600;
+/* ================= PHOTOS ================= */
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
-.card p {
-  margin: 6px 0;
-  font-size: 14px;
-  color: #374151;
+.photos-grid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* ================= FRIENDS ================= */
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  text-align: center;
+}
+
+.friend-item img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.friend-item span {
+  font-size: 13px;
+  display: block;
+  margin-top: 6px;
+}
+
+/* ================= POSTS ================= */
+.post-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.post-header {
+  display: flex;
+  gap: 10px;
+}
+
+.post-header img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.post-media {
+  margin-top: 14px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.post-media img,
+.post-media video {
+  width: 100%;
+  max-height: 520px;
+  object-fit: cover;
+}
+
+/* ================= POST ACTIONS ================= */
+.post-actions {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 14px;
+  padding-top: 10px;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.post-actions .liked {
+  color: #2563eb;
 }
 
 /* ================= POST MENU ================= */
+.post-menu {
+  position: relative;
+}
+
 .post-menu-btn {
   background: #f0f2f5;
   border: none;
@@ -202,6 +283,57 @@ body {
 
 .post-menu-btn:hover {
   background: #e5e7eb;
+}
+
+/* ================= COMMENTS ================= */
+.comment-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #f0f2f5;
+  margin-top: 10px;
+}
+
+.comment {
+  margin-top: 10px;
+}
+
+.reply {
+  margin-left: 24px;
+  margin-top: 8px;
+}
+
+.comment-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 12px;
+}
+
+/* ================= MEDIA PREVIEW ================= */
+.create-post-preview img,
+.create-post-preview video {
+  width: 100%;
+  max-height: 400px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.preview-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  cursor: pointer;
+  display: none;
 }
 
 /* ================= MOBILE ================= */
@@ -217,9 +349,12 @@ body {
     align-items: flex-start;
     gap: 12px;
   }
+
+  .profile-header-glass {
+    margin-top: -90px;
+  }
 }
 </style>
-
 <div class="profile-page">
 <!-- COVER -->
 <div class="profile-cover"
